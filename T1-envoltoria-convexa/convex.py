@@ -16,9 +16,27 @@ class Point:
         return f'p({self.x},{self.y})'
 
 
+def last(stack):
+    return stack[-1]
+
+
+def penultimate(stack):
+    return stack[-2]
+
+
 def ccw(p1: Point, p2: Point, p3: Point) -> int:
     if p1 and p2 and p3:
         return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)
+
+
+def graham_scan_partial(points):
+    stack = []
+    for point in points:
+        while len(stack) > 1 and ccw(penultimate(stack), last(stack), point) < 0:
+            stack.pop(-1)
+        stack.append(point)
+    stack.pop(-1)
+    return stack
 
 
 def graham_scan(points: List[Point]) -> List[Point]:
@@ -27,19 +45,7 @@ def graham_scan(points: List[Point]) -> List[Point]:
 
     points.sort(key=lambda p: p.x)
 
-    lower_stack = []
-    for point in points:
-        while len(lower_stack) > 1 and ccw(lower_stack[-2], lower_stack[-1], point) < 0:
-            lower_stack.pop(-1)
-        lower_stack.append(point)
-
-    upper_stack = []
-    for point in reversed(points):
-        while len(upper_stack) > 1 and ccw(upper_stack[-2], upper_stack[-1], point) < 0:
-            upper_stack.pop(-1)
-        upper_stack.append(point)
-
-    lower_stack.pop(-1)
-    upper_stack.pop(-1)
+    lower_stack = graham_scan_partial(points)
+    upper_stack = graham_scan_partial(reversed(points))
 
     return [*lower_stack, *upper_stack]

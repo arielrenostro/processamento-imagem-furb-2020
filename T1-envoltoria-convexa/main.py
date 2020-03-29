@@ -41,28 +41,25 @@ def read_gallery(lines) -> Gallery:
     return gallery
 
 
-def generate_galleries_by_iter(lines):
+def generate_galleries(lines):
     galleries = []
-
-    if not isinstance(lines, collections.Iterable):
-        return galleries
 
     while True:
         try:
-            gallery = read_gallery(lines)
-            galleries.append(gallery)
+            galleries.append(
+                read_gallery(lines)
+            )
         except StopIteration:
             break
 
     return galleries
 
 
-if __name__ == '__main__':
+def main():
     with open('input.txt', 'r') as file:
         lines = iter(file.readlines())
-    galleries = generate_galleries_by_iter(lines)
 
-    for gallery in galleries:
+    for gallery in generate_galleries(lines):
         if gallery.error:
             print(gallery.error)
             continue
@@ -72,3 +69,7 @@ if __name__ == '__main__':
             print('No')
         else:
             print('Yes')
+
+
+if __name__ == '__main__':
+    main()
